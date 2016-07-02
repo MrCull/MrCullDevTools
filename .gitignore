@@ -1,0 +1,7 @@
+.vs/config/applicationhost.config
+MrCullDevTools/Web.config
+MrCullDevTools/obj/Release/MrCullDevTools.csprojResolveAssemblyReference.cache
+MrCullDevTools/obj/Release/MrCullDevTools.csproj.FileListAbsolute.txt
+MrCullDevTools/obj/Release/DesignTimeResolveAssemblyReferencesInput.cache
+MrCullDevTools.Tests/obj/Release/DesignTimeResolveAssemblyReferencesInput.cache
+.vs/MrCullDevTools/v14/.suo

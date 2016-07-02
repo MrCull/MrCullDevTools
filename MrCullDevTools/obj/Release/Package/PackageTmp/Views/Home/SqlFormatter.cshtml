@@ -1,0 +1,41 @@
+﻿@using System.Linq
+
+@model SqlFormatter
+@{
+    ViewBag.Nav = Navigation.Home;
+}
+
+@section Title {
+    Sql Formatter
+}
+
+<h2>Sql Formatter</h2>
+
+
+<div class="form-horizontal row">
+    <div class="col-sm-10">
+        @using (Html.BeginForm())
+        {
+            @Html.ValidationSummary(false)
+            <fieldset class="col-md-12">
+                <div class="form-group">
+                    @Html.TextArea("inputSQL", null, new { @class = "form-control", @rows="10" })
+                    @Html.ValidationMessageFor(x => x.inputSQL)
+
+                  
+                </div> 
+                <div class="form-group">
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Format SQL</button>
+                    </div>
+                </div>
+            </fieldset>
+         }
+    </div>
+</div>
+@if (!Model.outputSQL.IsEmpty())
+{
+    <div class="col-sm-10">
+    @Html.TextArea("outputSQL", null, new { @class = "form-control", @rows = Model.outputSQL.Split('\n').ToList().Count() })
+    </div>
+}

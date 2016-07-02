@@ -1,0 +1,72 @@
+﻿@using System.Linq
+
+@model RandomNumbers
+@{
+    ViewBag.Nav = Navigation.Home;
+}
+
+@section Title {
+    Random Number Generator
+}
+
+<h2>Random Numbers</h2>
+
+<div class="form-horizontal row">
+    <div class="col-sm-4">
+        @using (Html.BeginForm())
+        {
+            @Html.ValidationSummary(false)
+            <fieldset class="col-md-12">
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Min, new { @class = "col-md-6 control-label" })
+                    <div class="col-md-4">
+                        @Html.TextBoxWithMaxLengthFor(x => x.Min, new { @class = "form-control" })
+                        <span class="form-control-static hide" title="Min is valid"><i class="icon-ok"></i></span>
+                        <span class="form-control-static hide" title="Min is not valid"><i class="icon-remove"></i></span>
+                        @Html.ValidationMessageFor(x => x.Min)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Max, new { @class = "col-md-6 control-label" })
+                    <div class="col-md-4">
+                        @Html.TextBoxWithMaxLengthFor(x => x.Max, new { @class = "form-control" })
+                        <span class="form-control-static hide" title="Max is valid"><i class="icon-ok"></i></span>
+                        <span class="form-control-static hide" title="Max is not valid"><i class="icon-remove"></i></span>
+                        @Html.ValidationMessageFor(x => x.Max)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Quantity, new { @class = "col-md-6 control-label" })
+                    <div class="col-md-4">
+                        @Html.TextBoxWithMaxLengthFor(x => x.Quantity, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(x => x.Quantity)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Get Container IDs</button>
+                    </div>
+                </div>
+            </fieldset>
+        }
+    </div>
+
+    <div class="col-sm-2">
+        @if (Model.Numbers.Count > 0)
+        {
+
+            <table class="table table-hover">
+                <tr>
+                    <th>Random Number</th>
+                </tr>
+                @foreach (var num in Model.Numbers)
+                {
+                    <tr>
+                        <td class="left">@num</td>
+                    </tr>
+                }
+            </table>
+        }
+    </div>
+
+</div>

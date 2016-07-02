@@ -1,0 +1,30 @@
+﻿@model Menu
+@{
+	Layout = null;
+}
+<ul class="nav navbar-nav">
+	<li @if (Model.Nav == Navigation.Home) { <text>class="active"</text> }><a href="@Url.Home().Index()">Home</a></li>
+    <li @if (Model.Nav == Navigation.Home) { <text> class="active" </text>     }><a href="@Url.Home().SqlFormatter()">SQL Formatter</a></li>
+    <li @if (Model.Nav == Navigation.Home) { <text> class="active" </text>      }><a href="@Url.Home().JsonFormatter()">JSON Formatter</a></li>
+    <li @if (Model.Nav == Navigation.Home) { <text> class="active" </text>    }><a href="@Url.Home().RandomNumbers()">Random Numbers</a></li>
+    <li @if (Model.Nav == Navigation.Home) { <text> class="active" </text>  }><a href="@Url.Home().ContIdGen()">Container ID Generator</a></li>
+    <li @if (Model.Nav == Navigation.Home) { <text> class="active" </text>   }><a href="@Url.Home().ClientDetails()">Client Details</a></li>
+    
+</ul>
+<ul class="nav navbar-nav navbar-right">
+	@if (User.Identity.IsAuthenticated) {
+		<li class="dropdown">
+			<a class="dropdown-toggle" data-toggle="dropdown" href="#">@(((UserPrincipal)User).UserObject.Username) <b class="caret"></b></a>
+			<ul class="dropdown-menu" role="menu">
+				@if(((UserPrincipal)User).IsAdmin)
+				{
+					<li><a href="@Url.Admin().Home().Index()">Admin</a></li>
+					<li class="divider"></li>
+				}
+				<li><a href="@Url.Account().Logout()">Logout</a></li>
+			</ul>
+		</li>
+	} else {
+		<li><a href="@Url.Account().Login()">Login</a></li>
+	}
+</ul>

@@ -1,0 +1,360 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PublicBroadcasting</name>
+    </assembly>
+    <members>
+        <member name="M:PublicBroadcasting.Impl.ClassTypeDescription.AnyNonUniformMembers">
+            <summary>
+            Returns true if any member chosen to be serialized is
+            A) A property
+            B) Has only a getter or only a setter
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:PublicBroadcasting.Impl.ExtensionMethods.IsAnonymouseClass(System.Type)">
+            <summary>
+            HACK: This is a best effort attempt to divine if a type is anonymous based on the language spec.
+            
+            Reference section 7.6.10.6 of the C# language spec as of 2012/11/19
+            
+            It checks:
+                - is a class
+                - descends directly from object
+                - has [CompilerGenerated]
+                - has a single constructor
+                - that constructor takes exactly the same parameters as its public properties
+                - all public properties are not writable
+                - has a private field for every public property
+                - overrides Equals(object)
+                - overrides GetHashCode()
+            </summary>
+        </member>
+        <member name="T:PublicBroadcasting.IncludedMembers">
+            <summary>
+            Which members to include while serializing.
+            
+            Always used in conjunction with IncludedVisibility when discovering members.
+            </summary>
+        </member>
+        <member name="F:PublicBroadcasting.IncludedMembers.Properties">
+            <summary>
+            Includes any properties with getters.
+            </summary>
+        </member>
+        <member name="F:PublicBroadcasting.IncludedMembers.Fields">
+            <summary>
+            Includes all fields
+            </summary>
+        </member>
+        <member name="T:PublicBroadcasting.IncludedVisibility">
+            <summary>
+            Which visibility levels to consider when serializing.
+            
+            Always used in conjunction with IncludedMembers when discovering members.
+            </summary>
+        </member>
+        <member name="F:PublicBroadcasting.IncludedVisibility.Public">
+            <summary>
+            Includes any public members
+            </summary>
+        </member>
+        <member name="F:PublicBroadcasting.IncludedVisibility.Protected">
+            <summary>
+            Includes any protected members.
+            
+            Note that it is possible for a member to be both protected and internal, Public Broadcasting
+            will include a member which is both if either Protected or Internal is passed for visiblity.
+            </summary>
+        </member>
+        <member name="F:PublicBroadcasting.IncludedVisibility.Internal">
+            <summary>
+            Includes any internal members.
+            
+            Note that it is possible for a member to be both protected and internal, Public Broadcasting
+            will include a member which is both if either Protected or Internal is passed for visiblity.
+            </summary>
+        </member>
+        <member name="F:PublicBroadcasting.IncludedVisibility.Private">
+            <summary>
+            Includes any private members.
+            
+            Be aware that normally hidden members (like the fields backing auto-implemented properties) will be
+            included when Private is passed.
+            </summary>
+        </member>
+        <member name="T:PublicBroadcasting.Serializer">
+            <summary>
+            Provides serialization and deserialization methods for a self-describing format
+            built on top of protocol buffers.
+            </summary>
+            <remarks>
+            Public Broadcasting is built on top of protobuf-net, and by design will always be
+            somewhat slower and larger.  If you need higher performace or more compact results,
+            consider using protobuf-net directly; but be aware that protobuf-net requires
+            manual member anotation and versioning.
+            </remarks>
+        </member>
+        <member name="M:PublicBroadcasting.Serializer.Serialize``1(``0)">
+            <summary>
+            Serializes public fields and properties of the given instance to a byte array.
+            </summary>
+            <typeparam name="T">The type being serialized.</typeparam>
+            <param name="obj">The existing instance to be serialized.</param>
+            <returns>A byte array representing the public fields and properties of obj.</returns>
+            <remarks>To specify a different collection of members to serialize, use one of the overrides of Serialize&lt;T&gt;.</remarks>
+        </member>
+        <member name="M:PublicBroadcasting.Serializer.SerializeAsync``1(``0)">
+            <summary>
+            Asynchronously, serializes public fields and properties of the given instance to a byte array.
+            </summary>
+            <typeparam name="T">The type being serialized.</typeparam>
+            <param name="obj">The existing instance to be serialized.</param>
+            <returns>A byte array representing the public fields and properties of obj.</returns>
+            <remarks>To specify a different collection of members to serialize, use one of the overrides of Serialize&lt;T&gt;.</remarks>
+        </member>
+        <member name="M:PublicBroadcasting.Serializer.Serialize``1(``0,PublicBroadcasting.IncludedMembers)">
+            <summary>
+            Serializes the specified public members of the given instance to a byte array.
+            </summary>
+            <typeparam name="T">The type being serialized.</typeparam>
+            <param name="obj">The existing instance to be serialized.</param>
+            <param name="members">The members to serialize, either Fields, Properties, or both.</param>
+            <returns>A byte array representing the specified public members of obj.</returns>
+            <remarks>To specify a different collection of members to serialize, use one of the overrides of Serialize&lt;T&gt;.</remarks>
+        </member>
+        <member name="M:PublicBroadcasting.Serializer.SerializeAsync``1(``0,PublicBroadcasting.IncludedMembers)">
+            <summary>
+            Asynchronously, serializes the specified public members of the given instance to a byte array.
+            </summary>
+            <typeparam name="T">The type being serialized.</typeparam>
+            <param name="obj">The existing instance to be serialized.</param>
+            <param name="members">The members to serialize, either Fields, Properties, or both.</param>
+            <returns>A byte array representing the specified public members of obj.</returns>
+            <remarks>To specify a different collection of members to serialize, use one of the overrides of Serialize&lt;T&gt;.</remarks>
+        </member>
+        <member name="M:PublicBroadcasting.Serializer.Serialize``1(``0,PublicBroadcasting.IncludedVisibility)">
+            <summary>
+            Serializes the specified fields and properties of the given instance to a byte array.
+            </summary>
+            <typeparam name="T">The type being serialized.</typeparam>
+            <param name="obj">The existing instance to be serialized.</param>
+            <param name="visibility">The visibility of fields and properties to serialize, some combination of Public, Protected, Internal, and Private.</param>
+            <returns>A byte array representing the specified fields and properties of obj.</returns>
+            <remarks>To specify a different collection of members to serialize, use one of the overrides of Serialize&lt;T&gt;.</remarks>
+        </member>
+        <member name="M:PublicBroadcasting.Serializer.SerializeAsync``1(``0,PublicBroadcasting.IncludedVisibility)">
+            <summary>
+            Asynchronously, serializes the specified fields and properties of the given instance to a byte array.
+            </summary>
+            <typeparam name="T">The type being serialized.</typeparam>
+            <param name="obj">The existing instance to be serialized.</param>
+            <param name="visibility">The visibility of fields and properties to serialize, some combination of Public, Protected, Internal, and Private.</param>
+            <returns>A byte array representing the specified fields and properties of obj.</returns>
+            <remarks>To specify a different collection of members to serialize, use one of the overrides of Serialize&lt;T&gt;.</remarks>
+        </member>
+        <member name="M:PublicBroadcasting.Serializer.Serialize``1(``0,PublicBroadcasting.IncludedMembers,PublicBroadcasting.IncludedVisibility)">
+            <summary>
+            Serializes the specified members of the given instance to a byte array.
+            </summary>
+            <typeparam name="T">The type being serialized.</typeparam>
+            <param name="obj">The existing instance to be serialized.</param>
+            <param name="members">The members to serialize, either Fields, Properties, or both.</param>
+            <param name="visibility">The visibility of fields and properties to serialize, some combination of Public, Protected, Internal, and Private.</param>
+            <returns>A byte array representing the specified members of obj.</returns>
+        </member>
+        <member name="M:PublicBroadcasting.Serializer.SerializeAsync``1(``0,PublicBroadcasting.IncludedMembers,PublicBroadcasting.IncludedVisibility)">
+            <summary>
+            Asynchronously, serializes the specified members of the given instance to a byte array.
+            </summary>
+            <typeparam name="T">The type being serialized.</typeparam>
+            <param name="obj">The existing instance to be serialized.</param>
+            <param name="members">The members to serialize, either Fields, Properties, or both.</param>
+            <param name="visibility">The visibility of fields and properties to serialize, some combination of Public, Protected, Internal, and Private.</param>
+            <returns>A byte array representing the specified members of obj.</returns>
+        </member>
+        <member name="M:PublicBroadcasting.Serializer.Serialize``1(System.IO.Stream,``0)">
+            <summary>
+            Serializes public fields and properties of the given instance to the given Stream.
+            </summary>
+            <typeparam name="T">The type being serialized.</typeparam>
+            <param name="stream">The stream to serialize obj to.</param>
+            <param name="obj">The existing instance to be serialized.</param>
+            <remarks>To specify a different collection of members to serialize, use one of the overrides of Serialize&lt;T&gt;.</remarks>
+        </member>
+        <member name="M:PublicBroadcasting.Serializer.SerializeAsync``1(System.IO.Stream,``0)">
+            <summary>
+            Asynchronously, serializes public fields and properties of the given instance to the given Stream.
+            </summary>
+            <typeparam name="T">The type being serialized.</typeparam>
+            <param name="stream">The stream to serialize obj to.</param>
+            <param name="obj">The existing instance to be serialized.</param>
+            <remarks>To specify a different collection of members to serialize, use one of the overrides of Serialize&lt;T&gt;.</remarks>
+        </member>
+        <member name="M:PublicBroadcasting.Serializer.Serialize``1(System.IO.Stream,``0,PublicBroadcasting.IncludedMembers)">
+            <summary>
+            Serializes the specified public members of the given instance to the given Stream.
+            </summary>
+            <typeparam name="T">The type being serialized.</typeparam>
+            <param name="stream">The stream to serialize obj to.</param>
+            <param name="obj">The existing instance to be serialized.</param>
+            <param name="members">The members to serialize, either Fields, Properties, or both.</param>
+            <remarks>To specify a different collection of members to serialize, use one of the overrides of Serialize&lt;T&gt;.</remarks>
+        </member>
+        <member name="M:PublicBroadcasting.Serializer.SerializeAsync``1(System.IO.Stream,``0,PublicBroadcasting.IncludedMembers)">
+            <summary>
+            Asynchronously, serializes the specified public members of the given instance to the given Stream.
+            </summary>
+            <typeparam name="T">The type being serialized.</typeparam>
+            <param name="stream">The stream to serialize obj to.</param>
+            <param name="obj">The existing instance to be serialized.</param>
+            <param name="members">The members to serialize, either Fields, Properties, or both.</param>
+            <remarks>To specify a different collection of members to serialize, use one of the overrides of Serialize&lt;T&gt;.</remarks>
+        </member>
+        <member name="M:PublicBroadcasting.Serializer.Serialize``1(System.IO.Stream,``0,PublicBroadcasting.IncludedVisibility)">
+            <summary>
+            Serializes the specified fields and properties of the given instance to the given Stream.
+            </summary>
+            <typeparam name="T">The type being serialized.</typeparam>
+            <param name="stream">The stream to serialize obj to.</param>
+            <param name="obj">The existing instance to be serialized.</param>
+            <param name="visibility">The visibility of fields and properties to serialize, some combination of Public, Protected, Internal, and Private.</param>
+            <remarks>To specify a different collection of members to serialize, use one of the overrides of Serialize&lt;T&gt;.</remarks>
+        </member>
+        <member name="M:PublicBroadcasting.Serializer.SerializeAsync``1(System.IO.Stream,``0,PublicBroadcasting.IncludedVisibility)">
+            <summary>
+            Asynchronously, serializes the specified fields and properties of the given instance to the given Stream.
+            </summary>
+            <typeparam name="T">The type being serialized.</typeparam>
+            <param name="stream">The stream to serialize obj to.</param>
+            <param name="obj">The existing instance to be serialized.</param>
+            <param name="visibility">The visibility of fields and properties to serialize, some combination of Public, Protected, Internal, and Private.</param>
+            <remarks>To specify a different collection of members to serialize, use one of the overrides of Serialize&lt;T&gt;.</remarks>
+        </member>
+        <member name="M:PublicBroadcasting.Serializer.Serialize``1(System.IO.Stream,``0,PublicBroadcasting.IncludedMembers,PublicBroadcasting.IncludedVisibility)">
+            <summary>
+            Serializes the specified members of the given instance to the given Stream.
+            </summary>
+            <typeparam name="T">The type being serialized.</typeparam>
+            <param name="stream">The stream to serialize obj to.</param>
+            <param name="obj">The existing instance to be serialized.</param>
+            <param name="members">The members to serialize, either Fields, Properties, or both.</param>
+            <param name="visibility">The visibility of fields and properties to serialize, some combination of Public, Protected, Internal, and Private.</param>
+        </member>
+        <member name="M:PublicBroadcasting.Serializer.SerializeAsync``1(System.IO.Stream,``0,PublicBroadcasting.IncludedMembers,PublicBroadcasting.IncludedVisibility)">
+            <summary>
+            Asynchronously, serializes the specified members of the given instance to the given Stream.
+            </summary>
+            <typeparam name="T">The type being serialized.</typeparam>
+            <param name="stream">The stream to serialize obj to.</param>
+            <param name="obj">The existing instance to be serialized.</param>
+            <param name="members">The members to serialize, either Fields, Properties, or both.</param>
+            <param name="visibility">The visibility of fields and properties to serialize, some combination of Public, Protected, Internal, and Private.</param>
+        </member>
+        <member name="M:PublicBroadcasting.Serializer.Deserialize``1(System.Byte[])">
+            <summary>
+            Creates a new instance from a byte array previously generated with Public Broadcasting.
+            </summary>
+            <typeparam name="T">The type to be created.</typeparam>
+            <param name="bytes">The byte array to deserialize from.</param>
+            <returns>A new, initialized instance.</returns>
+            <remarks>T does not need to be the same type used to generate bytes, Public Broadcasting will map
+            types based on their structure.  In short, members with the same names and compatible types will be mapped to
+            each other.</remarks>
+        </member>
+        <member name="M:PublicBroadcasting.Serializer.DeserializeAsync``1(System.Byte[])">
+            <summary>
+            Asynchronously, creates a new instance from a byte array previously generated with Public Broadcasting.
+            </summary>
+            <typeparam name="T">The type to be created.</typeparam>
+            <param name="bytes">The byte array to deserialize from.</param>
+            <returns>A new, initialized instance.</returns>
+            <remarks>T does not need to be the same type used to generate bytes, Public Broadcasting will map
+            types based on their structure.  In short, members with the same names and compatible types will be mapped to
+            each other.</remarks>
+        </member>
+        <member name="M:PublicBroadcasting.Serializer.Deserialize``1(System.IO.Stream)">
+            <summary>
+            Creates a new instance from a Stream previously generated with Public Broadcasting.
+            </summary>
+            <typeparam name="T">The type to be created.</typeparam>
+            <param name="stream">The Stream to deserialize from.</param>
+            <returns>A new, initialized instance.</returns>
+            <remarks>T does not need to be the same type used to generate stream, Public Broadcasting will map
+            types based on their structure.  In short, members with the same names and compatible types will be mapped to
+            each other.</remarks>
+        </member>
+        <member name="M:PublicBroadcasting.Serializer.DeserializeAsync``1(System.IO.Stream)">
+            <summary>
+            Asynchronously, creates a new instance from a Stream previously generated with Public Broadcasting.
+            </summary>
+            <typeparam name="T">The type to be created.</typeparam>
+            <param name="stream">The Stream to deserialize from.</param>
+            <returns>A new, initialized instance.</returns>
+            <remarks>T does not need to be the same type used to generate stream, Public Broadcasting will map
+            types based on their structure.  In short, members with the same names and compatible types will be mapped to
+            each other.</remarks>
+        </member>
+        <member name="M:PublicBroadcasting.Serializer.Deserialize(System.Byte[])">
+            <summary>
+            Creates a dynamically bound object from a byte array previously generated with Public Broadcasting.
+            </summary>
+            <param name="bytes">The byte array to deserialize from.</param>
+            <returns>A new, initialized instance.</returns>
+            <remarks>Public Broadcasting will not map the type returned to the type used to generate bytes, even if
+            it is available in theory.  Also be aware that the underlying types of enumerations and the Value/Reference Type distinction
+            of any serialized types will be lost.
+            
+            In short, dynamically typed returns will have the correct member names and values but nothing else is guaranteed.</remarks>
+        </member>
+        <member name="M:PublicBroadcasting.Serializer.DeserializeAsync(System.Byte[])">
+            <summary>
+            Asynchronously, creates a dynamically bound object from a byte array previously generated with Public Broadcasting.
+            </summary>
+            <param name="bytes">The byte array to deserialize from.</param>
+            <returns>A new, initialized instance.</returns>
+            <remarks>Public Broadcasting will not map the type returned to the type used to generate bytes, even if
+            it is available in theory.  Also be aware that the underlying types of enumerations and the Value/Reference Type distinction
+            of any serialized types will be lost.
+            
+            In short, dynamically typed returns will have the correct member names and values but nothing else is guaranteed.</remarks>
+        </member>
+        <member name="M:PublicBroadcasting.Serializer.Deserialize(System.IO.Stream)">
+            <summary>
+            Creates a dynamically bound object from a Stream previously generated with Public Broadcasting.
+            </summary>
+            <param name="stream">The Stream to deserialize from.</param>
+            <returns>A new, initialized instance.</returns>
+            <remarks>Public Broadcasting will not map the type returned to the type used to generate bytes, even if
+            it is available in theory.  Also be aware that the underlying types of enumerations and the Value/Reference Type distinction
+            of any serialized types will be lost.
+            
+            In short, dynamically typed returns will have the correct member names and values but nothing else is guaranteed.</remarks>
+        </member>
+        <member name="M:PublicBroadcasting.Serializer.DeserializeAsync(System.IO.Stream)">
+            <summary>
+            Asynchronously, creates a dynamically bound object from a Stream previously generated with Public Broadcasting.
+            </summary>
+            <param name="stream">The Stream to deserialize from.</param>
+            <returns>A new, initialized instance.</returns>
+            <remarks>Public Broadcasting will not map the type returned to the type used to generate bytes, even if
+            it is available in theory.  Also be aware that the underlying types of enumerations and the Value/Reference Type distinction
+            of any serialized types will be lost.
+            
+            In short, dynamically typed returns will have the correct member names and values but nothing else is guaranteed.</remarks>
+        </member>
+        <member name="T:PublicBroadcasting.Impl.TypeAndTypeDescriptionComparer">
+            <summary>
+            Uses TypeDescriptionComparer, and thus like it only works on types that *don't* have cycles
+            </summary>
+        </member>
+        <member name="T:PublicBroadcasting.Impl.TypeDescriptionComparer">
+            <summary>
+            Note that this only works on TypeDescriptions that *don't have cycles*!
+            
+            In practice this means it can't be used while serializing, but after a type has been flattened
+            then everything's OK.
+            </summary>
+        </member>
+    </members>
+</doc>

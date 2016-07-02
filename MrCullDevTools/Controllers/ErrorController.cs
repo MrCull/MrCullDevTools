@@ -1,0 +1,58 @@
+﻿using System.Data;
+using System.Linq;
+using System.Net;
+using System.Web.Mvc;
+using CacheStack.DonutCaching;
+using MrCullDevTools.Infrastructure;
+using MrCullDevTools.ViewModels.Error;
+using MvcKickstart.Infrastructure;
+using MvcKickstart.Infrastructure.Attributes;
+using ServiceStack.CacheAccess;
+
+namespace MrCullDevTools.Controllers
+{
+	public class ErrorController : BaseController
+	{
+		public ErrorController(IDbConnection db, ICacheClient cache, IMetricTracker metrics) : base (db, cache, metrics){}
+
+		[Route("Error", Name = "Error_Index")]
+		[DonutOutputCache]
+		public ActionResult Index()
+		{
+			return View("Error");
+		}
+
+		[Route("Invalid-Page", Name = "Error_InvalidPage")]
+		[DonutOutputCache]
+		public ActionResult InvalidPage()
+		{
+			var model = new InvalidPage();
+
+			// Try to grab their original url so we can do suggestions?
+			var values = Request.QueryString != null && Request.QueryString.Count > 0 ? Request.QueryString.GetValues(0) : null;
+			if (values != null)
+			{
+				var value = values.FirstOrDefault();
+				if (!string.IsNullOrEmpty(value) && value.StartsWith("404;"))
+				{
+					// We were directed to this page by IIS.
+					Metrics.Increment(Metric.Error_404);
+
+					// TODO: Add smarter logic for suggesting pages?
+//					var url = value.Split(new[] { "404;" }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
+//					var action = (string.IsNullOrEmpty(url) ? string.Empty : url.Substring(url.LastIndexOf('/'))).TrimStart('/');
+				}
+			}
+
+			Response.StatusCode = (int) HttpStatusCode.NotFound;
+			return View(model);
+		}
+
+		[Route("No-Permission", Name = "Error_NoPermission")]
+		[DonutOutputCache]
+		public ActionResult NoPermission()
+		{
+			return View();
+		}
+	}
+}

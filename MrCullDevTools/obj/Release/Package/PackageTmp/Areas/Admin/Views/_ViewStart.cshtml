@@ -1,0 +1,20 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+	try
+	{
+		Bundles.Reference("~/Content/js/Admin/" + ViewContext.RouteData.Values["controller"] + "/" + ViewContext.RouteData.Values["action"] + ".js");
+	}
+	catch (Exception)
+	{
+		// Means the location does not exist yet
+	}
+	try
+	{
+		Bundles.Reference("~/Content/css/Admin/" + ViewContext.RouteData.Values["controller"] + "/" + ViewContext.RouteData.Values["action"] + ".css");
+	}
+	catch (Exception)
+	{
+		// Means the location does not exist yet
+	}
+}

@@ -8,7 +8,7 @@ This is a .net 4.5, asp.net mvc 5 project and is basded on the https://github.co
 
 This website is currently running live at http://mrcull.co.uk
 
-Please feel to use, fork or send in any Pull requests...
+Please feel free to use, fork or send in any Pull requests...
 
 
 

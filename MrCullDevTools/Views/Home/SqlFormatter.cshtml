@@ -20,14 +20,17 @@
             <fieldset class="col-md-12">
                 <div class="form-group">
                     @Html.TextArea("inputSQL", null, new { @class = "form-control", @rows="10" })
-                    @Html.ValidationMessageFor(x => x.inputSQL)
-
-                  
+                    @Html.ValidationMessageFor(x => x.inputSQL)                  
                 </div> 
                 <div class="form-group">
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary">Format SQL</button>
                     </div>
+                </div>
+                <div>
+                    <p>
+                        This page will call a rest interface provided via <a href="gudusoft.com">gudusoft.com</a> and then display the formatted response.
+                    </p>
                 </div>
             </fieldset>
          }

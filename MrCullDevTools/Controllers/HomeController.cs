@@ -111,28 +111,33 @@ namespace MrCullDevTools.Controllers
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/html"));
 
             client.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "text/html,application/xhtml+xml,application/xml");
-            client.DefaultRequestHeaders.TryAddWithoutValidation("Accept-Encoding", "gzip, deflate");
             client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "Mozilla/5.0 (Windows NT 6.2; WOW64; rv:19.0) Gecko/20100101 Firefox/19.0");
             client.DefaultRequestHeaders.TryAddWithoutValidation("Accept-Charset", "ISO-8859-1");
+
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls
+                | SecurityProtocolType.Tls11
+                | SecurityProtocolType.Tls12
+                | SecurityProtocolType.Ssl3;
 
             HttpResponseMessage response = await client.GetAsync(string.Format("/integers/?num={0}&min={1}&max={2}&col=1&base=10&format=plain&rnd=new", model.Quantity, model.Min, model.Max));
 
             using (var responseStream = await response.Content.ReadAsStreamAsync())
-            using (var decompressedStream = new GZipStream(responseStream, CompressionMode.Decompress))
-            using (var streamReader = new StreamReader(decompressedStream))
             {
-                if (response.IsSuccessStatusCode)
+                using (var streamReader = new StreamReader(responseStream))
                 {
-                    var mydata = streamReader.ReadToEnd(); // ReadAsStringAsync<MyData>().Result;
-                    foreach (var num in mydata.Split('\n'))
+                    if (response.IsSuccessStatusCode)
                     {
-                        if (num != string.Empty)
-                            model.Numbers.Add(num);
+                        var mydata = streamReader.ReadToEnd(); // ReadAsStringAsync<MyData>().Result;
+                        foreach (var num in mydata.Split('\n'))
+                        {
+                            if (num != string.Empty)
+                                model.Numbers.Add(num);
+                        }
                     }
-                }
-                else
-                {
-                    model.ReasonPhrase = response.ReasonPhrase;
+                    else
+                    {
+                        model.ReasonPhrase = response.ReasonPhrase;
+                    }
                 }
             }
 
